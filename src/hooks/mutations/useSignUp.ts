@@ -8,10 +8,10 @@ export function useSignUp({ redirectTo = '/' }: { redirectTo?: string } = {}) {
   const { startSession } = useAuthSession()
 
   return useMutation({
-    mutationFn: async ({ name, email, password }: SignUpValues) => {
+    mutationFn: async ({ firstName, lastName, email, password }: SignUpValues) => {
       const data = await apiFetch<unknown>('/auth/register', {
         method: 'POST',
-        body: JSON.stringify({ name, email, password }),
+        body: JSON.stringify({ firstName, lastName, email, password }),
       })
       return authResponseSchema.parse(data)
     },

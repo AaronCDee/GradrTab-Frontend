@@ -15,7 +15,7 @@ const SignUpPage = () => {
 
   const form = useForm<SignUpValues>({
     resolver: zodResolver(signUpSchema),
-    defaultValues: { name: '', email: '', password: '', confirmPassword: '' },
+    defaultValues: { firstName: '', lastName: '', email: '', password: '', confirmPassword: '' },
   })
 
   const { errors } = form.formState
@@ -36,14 +36,25 @@ const SignUpPage = () => {
       <form onSubmit={form.handleSubmit((values) => signUp.mutate(values))} noValidate>
         <FieldGroup>
           <Field>
-            <FieldLabel htmlFor="name">Name</FieldLabel>
+            <FieldLabel htmlFor="name">First Name</FieldLabel>
             <Input
-              id="name"
-              autoComplete="name"
-              aria-invalid={Boolean(errors.name)}
-              {...form.register('name')}
+              id="firstName"
+              autoComplete="firstName"
+              aria-invalid={Boolean(errors.firstName)}
+              {...form.register('firstName')}
             />
-            <FieldError errors={[errors.name]} />
+            <FieldError errors={[errors.firstName]} />
+          </Field>
+
+          <Field>
+            <FieldLabel htmlFor="lastName">Last Name</FieldLabel>
+            <Input
+              id="lastName"
+              autoComplete="lastName"
+              aria-invalid={Boolean(errors.lastName)}
+              {...form.register('lastName')}
+            />
+            <FieldError errors={[errors.lastName]} />
           </Field>
 
           <Field>

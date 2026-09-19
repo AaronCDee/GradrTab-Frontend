@@ -9,11 +9,10 @@ export function useSignIn({ redirectTo = '/' }: { redirectTo?: string } = {}) {
 
   return useMutation({
     mutationFn: async (values: SignInValues) => {
-      const data = await apiFetch<unknown>('/auth/login', {
+      return apiFetch('/auth/login', authResponseSchema, {
         method: 'POST',
         body: JSON.stringify(values),
       })
-      return authResponseSchema.parse(data)
     },
     onSuccess: (data) => startSession(data, redirectTo),
   })

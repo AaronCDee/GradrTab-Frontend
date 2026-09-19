@@ -9,11 +9,10 @@ export function useSignUp({ redirectTo = '/' }: { redirectTo?: string } = {}) {
 
   return useMutation({
     mutationFn: async ({ firstName, lastName, email, password }: SignUpValues) => {
-      const data = await apiFetch<unknown>('/auth/register', {
+      return apiFetch('/auth/register', authResponseSchema, {
         method: 'POST',
         body: JSON.stringify({ firstName, lastName, email, password }),
       })
-      return authResponseSchema.parse(data)
     },
     onSuccess: (data) => startSession(data, redirectTo),
   })

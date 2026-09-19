@@ -14,8 +14,8 @@ export const currentUserQueryOptions = queryOptions({
     if (!getToken()) return null
 
     try {
-      const data = await apiFetch<unknown>('/auth/me')
-      return currentUserResponseSchema.parse(data).user
+      const data = await apiFetch('/auth/me', currentUserResponseSchema)
+      return data.user
     } catch (error) {
       if (error instanceof ApiError && error.status === 401) {
         clearToken()

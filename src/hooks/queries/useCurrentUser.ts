@@ -2,7 +2,7 @@ import { queryOptions, useQuery } from '@tanstack/react-query'
 
 import { ApiError, apiFetch } from '@/lib/api'
 import { clearToken, getToken } from '@/lib/auth-token'
-import { currentUserResponseSchema, type User } from '@/lib/schemas/auth'
+import { userSchema, type User } from '@/lib/schemas/auth'
 
 export const authKeys = {
   currentUser: ['auth', 'currentUser'] as const,
@@ -14,8 +14,7 @@ export const currentUserQueryOptions = queryOptions({
     if (!getToken()) return null
 
     try {
-      const data = await apiFetch('/auth/me', currentUserResponseSchema)
-      return data.user
+      return await apiFetch('/me', userSchema)
     } catch (error) {
       if (error instanceof ApiError && error.status === 401) {
         clearToken()

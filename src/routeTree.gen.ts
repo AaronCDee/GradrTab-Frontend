@@ -13,9 +13,11 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedRouteImport } from './routes/_authenticated'
 import { Route as SignInRouteImport } from './routes/sign-in'
 import { Route as SignUpRouteImport } from './routes/sign-up'
-import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AuthenticatedRubricsIndexRouteImport } from './routes/_authenticated/rubrics/index'
 import { Route as AuthenticatedRubricsNewRouteImport } from './routes/_authenticated/rubrics/new'
+import { Route as AuthenticatedSubmissionsIndexRouteImport } from './routes/_authenticated/submissions/index'
+import { Route as AuthenticatedSubmissionsNewRouteImport } from './routes/_authenticated/submissions/new'
+import { Route as AuthenticatedSubmissionsSubmissionIdEditRouteImport } from './routes/_authenticated/submissions/$submissionId/edit'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -36,11 +38,6 @@ const SignUpRoute = SignUpRouteImport.update({
   path: '/sign-up',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
-  id: '/dashboard',
-  path: '/dashboard',
-  getParentRoute: () => AuthenticatedRoute,
-} as any)
 const AuthenticatedRubricsIndexRoute =
   AuthenticatedRubricsIndexRouteImport.update({
     id: '/rubrics/',
@@ -52,22 +49,44 @@ const AuthenticatedRubricsNewRoute = AuthenticatedRubricsNewRouteImport.update({
   path: '/rubrics/new',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
+const AuthenticatedSubmissionsIndexRoute =
+  AuthenticatedSubmissionsIndexRouteImport.update({
+    id: '/submissions/',
+    path: '/submissions/',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
+const AuthenticatedSubmissionsNewRoute =
+  AuthenticatedSubmissionsNewRouteImport.update({
+    id: '/submissions/new',
+    path: '/submissions/new',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
+const AuthenticatedSubmissionsSubmissionIdEditRoute =
+  AuthenticatedSubmissionsSubmissionIdEditRouteImport.update({
+    id: '/submissions/$submissionId/edit',
+    path: '/submissions/$submissionId/edit',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/sign-in': typeof SignInRoute
   '/sign-up': typeof SignUpRoute
-  '/dashboard': typeof AuthenticatedDashboardRoute
   '/rubrics/new': typeof AuthenticatedRubricsNewRoute
+  '/submissions/new': typeof AuthenticatedSubmissionsNewRoute
   '/rubrics/': typeof AuthenticatedRubricsIndexRoute
+  '/submissions/': typeof AuthenticatedSubmissionsIndexRoute
+  '/submissions/$submissionId/edit': typeof AuthenticatedSubmissionsSubmissionIdEditRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/sign-in': typeof SignInRoute
   '/sign-up': typeof SignUpRoute
-  '/dashboard': typeof AuthenticatedDashboardRoute
   '/rubrics/new': typeof AuthenticatedRubricsNewRoute
+  '/submissions/new': typeof AuthenticatedSubmissionsNewRoute
   '/rubrics': typeof AuthenticatedRubricsIndexRoute
+  '/submissions': typeof AuthenticatedSubmissionsIndexRoute
+  '/submissions/$submissionId/edit': typeof AuthenticatedSubmissionsSubmissionIdEditRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -75,25 +94,44 @@ export interface FileRoutesById {
   '/_authenticated': typeof AuthenticatedRouteWithChildren
   '/sign-in': typeof SignInRoute
   '/sign-up': typeof SignUpRoute
-  '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/_authenticated/rubrics/new': typeof AuthenticatedRubricsNewRoute
+  '/_authenticated/submissions/new': typeof AuthenticatedSubmissionsNewRoute
   '/_authenticated/rubrics/': typeof AuthenticatedRubricsIndexRoute
+  '/_authenticated/submissions/': typeof AuthenticatedSubmissionsIndexRoute
+  '/_authenticated/submissions/$submissionId/edit': typeof AuthenticatedSubmissionsSubmissionIdEditRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
-    '/' | '/sign-in' | '/sign-up' | '/dashboard' | '/rubrics/new' | '/rubrics/'
+    | '/'
+    | '/sign-in'
+    | '/sign-up'
+    | '/rubrics/new'
+    | '/submissions/new'
+    | '/rubrics/'
+    | '/submissions/'
+    | '/submissions/$submissionId/edit'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/sign-in' | '/sign-up' | '/dashboard' | '/rubrics/new' | '/rubrics'
+  to:
+    | '/'
+    | '/sign-in'
+    | '/sign-up'
+    | '/rubrics/new'
+    | '/submissions/new'
+    | '/rubrics'
+    | '/submissions'
+    | '/submissions/$submissionId/edit'
   id:
     | '__root__'
     | '/'
     | '/_authenticated'
     | '/sign-in'
     | '/sign-up'
-    | '/_authenticated/dashboard'
     | '/_authenticated/rubrics/new'
+    | '/_authenticated/submissions/new'
     | '/_authenticated/rubrics/'
+    | '/_authenticated/submissions/'
+    | '/_authenticated/submissions/$submissionId/edit'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -133,13 +171,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SignUpRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/_authenticated/dashboard': {
-      id: '/_authenticated/dashboard'
-      path: '/dashboard'
-      fullPath: '/dashboard'
-      preLoaderRoute: typeof AuthenticatedDashboardRouteImport
-      parentRoute: typeof AuthenticatedRoute
-    }
     '/_authenticated/rubrics/': {
       id: '/_authenticated/rubrics/'
       path: '/rubrics'
@@ -154,19 +185,45 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedRubricsNewRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/submissions/': {
+      id: '/_authenticated/submissions/'
+      path: '/submissions'
+      fullPath: '/submissions/'
+      preLoaderRoute: typeof AuthenticatedSubmissionsIndexRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/submissions/new': {
+      id: '/_authenticated/submissions/new'
+      path: '/submissions/new'
+      fullPath: '/submissions/new'
+      preLoaderRoute: typeof AuthenticatedSubmissionsNewRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/submissions/$submissionId/edit': {
+      id: '/_authenticated/submissions/$submissionId/edit'
+      path: '/submissions/$submissionId/edit'
+      fullPath: '/submissions/$submissionId/edit'
+      preLoaderRoute: typeof AuthenticatedSubmissionsSubmissionIdEditRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
   }
 }
 
 interface AuthenticatedRouteChildren {
-  AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
   AuthenticatedRubricsNewRoute: typeof AuthenticatedRubricsNewRoute
+  AuthenticatedSubmissionsNewRoute: typeof AuthenticatedSubmissionsNewRoute
   AuthenticatedRubricsIndexRoute: typeof AuthenticatedRubricsIndexRoute
+  AuthenticatedSubmissionsIndexRoute: typeof AuthenticatedSubmissionsIndexRoute
+  AuthenticatedSubmissionsSubmissionIdEditRoute: typeof AuthenticatedSubmissionsSubmissionIdEditRoute
 }
 
 const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
-  AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
   AuthenticatedRubricsNewRoute: AuthenticatedRubricsNewRoute,
+  AuthenticatedSubmissionsNewRoute: AuthenticatedSubmissionsNewRoute,
   AuthenticatedRubricsIndexRoute: AuthenticatedRubricsIndexRoute,
+  AuthenticatedSubmissionsIndexRoute: AuthenticatedSubmissionsIndexRoute,
+  AuthenticatedSubmissionsSubmissionIdEditRoute:
+    AuthenticatedSubmissionsSubmissionIdEditRoute,
 }
 
 const AuthenticatedRouteWithChildren = AuthenticatedRoute._addFileChildren(

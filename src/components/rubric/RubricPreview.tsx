@@ -12,19 +12,24 @@ import type { RubricCriterion } from '@/lib/schemas/rubric'
 
 type RubricPreviewProps = {
   title: string
+  courseName: string
+  courseId: string
   criteria: RubricCriterion[]
 }
 
 const formatPoints = (points: number) => (Number.isFinite(points) ? points : '–')
 
-export function RubricPreview({ title, criteria }: RubricPreviewProps) {
+export function RubricPreview({ title, courseName, courseId, criteria }: RubricPreviewProps) {
   const columnCount = Math.max(1, ...criteria.map((criterion) => criterion.levels.length))
+  const description = [courseId.trim(), courseName.trim(), `${rubricTotalPoints(criteria)} points total`]
+    .filter(Boolean)
+    .join(' · ')
 
   return (
     <Card>
       <CardHeader>
         <CardTitle>{title || 'Untitled rubric'}</CardTitle>
-        <CardDescription>{rubricTotalPoints(criteria)} points total</CardDescription>
+        <CardDescription>{description}</CardDescription>
       </CardHeader>
       <CardContent>
         <Table>

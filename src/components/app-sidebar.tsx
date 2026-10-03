@@ -1,5 +1,5 @@
 import { Link } from '@tanstack/react-router'
-import { ClipboardListIcon, GraduationCapIcon, LayoutDashboardIcon } from 'lucide-react'
+import { ClipboardListIcon, FileTextIcon, GraduationCapIcon } from 'lucide-react'
 
 import { NavMain, type NavItem } from '@/components/nav-main'
 import { NavUser } from '@/components/nav-user'
@@ -16,7 +16,7 @@ import {
 import type { User } from '@/lib/schemas/auth'
 
 const navItems: NavItem[] = [
-  { title: 'Dashboard', to: '/dashboard', icon: <LayoutDashboardIcon /> },
+  { title: 'Submissions', to: '/submissions', icon: <FileTextIcon /> },
   { title: 'Rubrics', to: '/rubrics', icon: <ClipboardListIcon /> },
 ]
 
@@ -27,7 +27,7 @@ export function AppSidebar({ user }: { user: User }) {
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton size="lg" asChild>
-              <Link to="/dashboard">
+              <Link to="/submissions">
                 <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
                   <GraduationCapIcon className="size-4" />
                 </div>

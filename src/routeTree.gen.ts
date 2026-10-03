@@ -14,6 +14,8 @@ import { Route as AuthenticatedRouteImport } from './routes/_authenticated'
 import { Route as SignInRouteImport } from './routes/sign-in'
 import { Route as SignUpRouteImport } from './routes/sign-up'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
+import { Route as AuthenticatedRubricsIndexRouteImport } from './routes/_authenticated/rubrics/index'
+import { Route as AuthenticatedRubricsNewRouteImport } from './routes/_authenticated/rubrics/new'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -39,18 +41,33 @@ const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
   path: '/dashboard',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
+const AuthenticatedRubricsIndexRoute =
+  AuthenticatedRubricsIndexRouteImport.update({
+    id: '/rubrics/',
+    path: '/rubrics/',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
+const AuthenticatedRubricsNewRoute = AuthenticatedRubricsNewRouteImport.update({
+  id: '/rubrics/new',
+  path: '/rubrics/new',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/sign-in': typeof SignInRoute
   '/sign-up': typeof SignUpRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
+  '/rubrics/new': typeof AuthenticatedRubricsNewRoute
+  '/rubrics/': typeof AuthenticatedRubricsIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/sign-in': typeof SignInRoute
   '/sign-up': typeof SignUpRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
+  '/rubrics/new': typeof AuthenticatedRubricsNewRoute
+  '/rubrics': typeof AuthenticatedRubricsIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -59,12 +76,15 @@ export interface FileRoutesById {
   '/sign-in': typeof SignInRoute
   '/sign-up': typeof SignUpRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
+  '/_authenticated/rubrics/new': typeof AuthenticatedRubricsNewRoute
+  '/_authenticated/rubrics/': typeof AuthenticatedRubricsIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/sign-in' | '/sign-up' | '/dashboard'
+  fullPaths:
+    '/' | '/sign-in' | '/sign-up' | '/dashboard' | '/rubrics/new' | '/rubrics/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/sign-in' | '/sign-up' | '/dashboard'
+  to: '/' | '/sign-in' | '/sign-up' | '/dashboard' | '/rubrics/new' | '/rubrics'
   id:
     | '__root__'
     | '/'
@@ -72,6 +92,8 @@ export interface FileRouteTypes {
     | '/sign-in'
     | '/sign-up'
     | '/_authenticated/dashboard'
+    | '/_authenticated/rubrics/new'
+    | '/_authenticated/rubrics/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -118,15 +140,33 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedDashboardRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/rubrics/': {
+      id: '/_authenticated/rubrics/'
+      path: '/rubrics'
+      fullPath: '/rubrics/'
+      preLoaderRoute: typeof AuthenticatedRubricsIndexRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/rubrics/new': {
+      id: '/_authenticated/rubrics/new'
+      path: '/rubrics/new'
+      fullPath: '/rubrics/new'
+      preLoaderRoute: typeof AuthenticatedRubricsNewRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
   }
 }
 
 interface AuthenticatedRouteChildren {
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
+  AuthenticatedRubricsNewRoute: typeof AuthenticatedRubricsNewRoute
+  AuthenticatedRubricsIndexRoute: typeof AuthenticatedRubricsIndexRoute
 }
 
 const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
+  AuthenticatedRubricsNewRoute: AuthenticatedRubricsNewRoute,
+  AuthenticatedRubricsIndexRoute: AuthenticatedRubricsIndexRoute,
 }
 
 const AuthenticatedRouteWithChildren = AuthenticatedRoute._addFileChildren(

@@ -17,7 +17,7 @@ const searchSchema = z.object({
 
 const SignInPage = () => {
   const { redirect: redirectTo } = Route.useSearch()
-  const signIn = useSignIn({ redirectTo: redirectTo || '/dashboard' })
+  const signIn = useSignIn({ redirectTo: redirectTo || '/submissions' })
 
   const form = useForm<SignInValues>({
     resolver: zodResolver(signInSchema),
@@ -84,7 +84,7 @@ export const Route = createFileRoute('/sign-in')({
   validateSearch: searchSchema,
   beforeLoad: async ({ context, search }) => {
     const user = await context.queryClient.ensureQueryData(currentUserQueryOptions)
-    if (user) throw redirect({ to: search.redirect || '/dashboard' })
+    if (user) throw redirect({ to: search.redirect || '/submissions' })
   },
   component: SignInPage,
 })

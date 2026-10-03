@@ -1,30 +1,33 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Link } from '@tanstack/react-router'
 import { PlusIcon } from 'lucide-react'
-import { useState } from 'react'
 import { FormProvider, useFieldArray, useForm, useWatch, type Control } from 'react-hook-form'
 
 import { CriterionCard } from '@/components/rubric/CriterionCard'
-import { RubricJsonSheet } from '@/components/rubric/RubricJsonSheet'
 import { RubricPreview } from '@/components/rubric/RubricPreview'
 import { Button } from '@/components/ui/button'
 import { Field, FieldError, FieldGroup, FieldLabel } from '@/components/ui/field'
 import { Input } from '@/components/ui/input'
+import { useCreateRubric } from '@/hooks/mutations/useCreateRubric'
 import { createCriterion } from '@/lib/rubric'
-import { rubricFormSchema, type Rubric, type RubricFormValues } from '@/lib/schemas/rubric'
+import { rubricFormSchema, type RubricFormValues } from '@/lib/schemas/rubric'
 
 function LivePreview({ control }: { control: Control<RubricFormValues> }) {
-  const [title, criteria] = useWatch({ control, name: ['title', 'criteria'] })
-  return <RubricPreview title={title} criteria={criteria} />
+  const [title, courseName, courseId, criteria] = useWatch({
+    control,
+    name: ['title', 'courseName', 'courseId', 'criteria'],
+  })
+  return (
+    <RubricPreview title={title} courseName={courseName} courseId={courseId} criteria={criteria} />
+  )
 }
 
 export function RubricBuilder() {
-  const [savedRubric, setSavedRubric] = useState<Rubric | null>(null)
-  const [jsonOpen, setJsonOpen] = useState(false)
+  const createRubric = useCreateRubric()
 
   const form = useForm<RubricFormValues>({
     resolver: zodResolver(rubricFormSchema),
-    defaultValues: { title: '', criteria: [createCriterion()] },
+    defaultValues: { title: '', courseName: '', courseId: '', criteria: [createCriterion()] },
   })
   const criteria = useFieldArray({ control: form.control, name: 'criteria' })
   const { errors } = form.formState
@@ -34,10 +37,7 @@ export function RubricBuilder() {
   const duplicateCriterion = (index: number) =>
     criteria.insert(index + 1, { ...form.getValues(`criteria.${index}`), id: crypto.randomUUID() })
 
-  const onSubmit = (values: RubricFormValues) => {
-    setSavedRubric({ id: crypto.randomUUID(), ...values })
-    setJsonOpen(true)
-  }
+  const onSubmit = (values: RubricFormValues) => createRubric.mutate(values)
 
   return (
     <FormProvider {...form}>
@@ -55,6 +55,29 @@ export function RubricBuilder() {
               <FieldError errors={[errors.title]} />
             </Field>
 
+            <div className="grid gap-4 sm:grid-cols-2">
+              <Field>
+                <FieldLabel htmlFor="rubric-course-name">Course name</FieldLabel>
+                <Input
+                  id="rubric-course-name"
+                  placeholder="e.g. Writing and Rhetoric"
+                  aria-invalid={Boolean(errors.courseName)}
+                  {...form.register('courseName')}
+                />
+                <FieldError errors={[errors.courseName]} />
+              </Field>
+              <Field>
+                <FieldLabel htmlFor="rubric-course-id">Course ID</FieldLabel>
+                <Input
+                  id="rubric-course-id"
+                  placeholder="e.g. WRTG 150"
+                  aria-invalid={Boolean(errors.courseId)}
+                  {...form.register('courseId')}
+                />
+                <FieldError errors={[errors.courseId]} />
+              </Field>
+            </div>
+
             {criteria.fields.map((field, index) => (
               <CriterionCard
                 key={field.id}
@@ -66,6 +89,12 @@ export function RubricBuilder() {
               />
             ))}
 
+            {createRubric.error ? (
+              <p role="alert" className="text-sm text-destructive">
+                {createRubric.error.message}
+              </p>
+            ) : null}
+
             <div className="flex flex-wrap items-center justify-between gap-2">
               <Button type="button" variant="outline" onClick={addCriterion}>
                 <PlusIcon data-icon="inline-start" />
@@ -75,7 +104,9 @@ export function RubricBuilder() {
                 <Button variant="ghost" asChild>
                   <Link to="/rubrics">Cancel</Link>
                 </Button>
-                <Button type="submit">Save rubric</Button>
+                <Button type="submit" disabled={createRubric.isPending}>
+                  {createRubric.isPending ? 'Saving...' : 'Save rubric'}
+                </Button>
               </div>
             </div>
           </FieldGroup>
@@ -85,8 +116,6 @@ export function RubricBuilder() {
           <LivePreview control={form.control} />
         </div>
       </div>
-
-      <RubricJsonSheet rubric={savedRubric} open={jsonOpen} onOpenChange={setJsonOpen} />
     </FormProvider>
   )
 }

@@ -29,6 +29,8 @@ export const rubricCriterionSchema = z
 
 export const rubricFormSchema = z.object({
   title: z.string().trim().min(1, 'Title is required'),
+  courseName: z.string().trim().min(1, 'Course name is required'),
+  courseId: z.string().trim().min(1, 'Course ID is required'),
   criteria: z.array(rubricCriterionSchema).min(1, 'Add at least one criterion'),
 })
 

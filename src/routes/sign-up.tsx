@@ -111,7 +111,7 @@ const SignUpPage = () => {
 export const Route = createFileRoute('/sign-up')({
   beforeLoad: async ({ context }) => {
     const user = await context.queryClient.ensureQueryData(currentUserQueryOptions)
-    if (user) throw redirect({ to: '/dashboard' })
+    if (user) throw redirect({ to: '/submissions' })
   },
   component: SignUpPage,
 })

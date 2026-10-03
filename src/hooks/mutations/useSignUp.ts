@@ -4,7 +4,7 @@ import { useAuthSession } from '@/hooks/useAuthSession'
 import { apiFetch } from '@/lib/api'
 import { authResponseSchema, type SignUpValues } from '@/lib/schemas/auth'
 
-export function useSignUp({ redirectTo = '/dashboard' }: { redirectTo?: string } = {}) {
+export function useSignUp({ redirectTo = '/submissions' }: { redirectTo?: string } = {}) {
   const { startSession } = useAuthSession()
 
   return useMutation({

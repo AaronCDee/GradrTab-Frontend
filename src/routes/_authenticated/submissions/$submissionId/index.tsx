@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query'
 import { createFileRoute, Link, redirect } from '@tanstack/react-router'
-import { ClipboardCheckIcon, DownloadIcon, PencilIcon, SparklesIcon } from 'lucide-react'
+import { ClipboardCheckIcon, DownloadIcon, MailIcon, PencilIcon, SparklesIcon } from 'lucide-react'
 import { useEffect } from 'react'
 
 import { EvaluationCard } from '@/components/submission/EvaluationCard'
@@ -14,6 +14,7 @@ import {
   EmptyTitle,
 } from '@/components/ui/empty'
 import { Spinner } from '@/components/ui/spinner'
+import { useEmailSubmission } from '@/hooks/mutations/useEmailSubmission'
 import { useGradeSubmission } from '@/hooks/mutations/useGradeSubmission'
 import { documentQueryOptions } from '@/hooks/queries/useDocuments'
 import { rubricsQueryOptions, useRubrics } from '@/hooks/queries/useRubrics'
@@ -27,6 +28,7 @@ const SubmissionPage = () => {
   const { data: submission } = useQuery(submissionQueryOptions(submissionId))
   const { data: rubrics = [] } = useRubrics()
   const grade = useGradeSubmission(submissionId)
+  const email = useEmailSubmission(submissionId)
   const failureReason = submission?.gradingStatus === 'Failure' ? submission.failureReason : null
 
   useEffect(() => {
@@ -38,6 +40,7 @@ const SubmissionPage = () => {
   const rubric = rubrics.find((candidate) => candidate.id === submission.rubricId)
   const grading = grade.isPending || submission.gradingStatus === 'InProgress'
   const gradable = Boolean(submission.rubricId && submission.documentId)
+  const graded = submission.gradingStatus === 'Complete' && Boolean(submission.evaluation)
   const failure = grade.error
     ? grade.error.message
     : submission.gradingStatus === 'Failure'
@@ -79,6 +82,18 @@ const SubmissionPage = () => {
               <PencilIcon data-icon="inline-start" />
               Edit
             </Link>
+          </Button>
+          <Button
+            variant="outline"
+            onClick={() => email.mutate()}
+            disabled={!graded || grading || email.isPending}
+          >
+            {email.isPending ? (
+              <Spinner data-icon="inline-start" />
+            ) : (
+              <MailIcon data-icon="inline-start" />
+            )}
+            {email.isPending ? 'Sending...' : 'Email student'}
           </Button>
           <Button onClick={() => grade.mutate()} disabled={grading || !gradable}>
             {grading ? (

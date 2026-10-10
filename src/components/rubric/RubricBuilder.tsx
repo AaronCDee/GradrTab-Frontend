@@ -8,7 +8,6 @@ import { RubricPreview } from '@/components/rubric/RubricPreview'
 import { Button } from '@/components/ui/button'
 import { Field, FieldError, FieldGroup, FieldLabel } from '@/components/ui/field'
 import { Input } from '@/components/ui/input'
-import { useCreateRubric } from '@/hooks/mutations/useCreateRubric'
 import { createCriterion } from '@/lib/rubric'
 import { rubricFormSchema, type RubricFormValues } from '@/lib/schemas/rubric'
 
@@ -22,12 +21,29 @@ function LivePreview({ control }: { control: Control<RubricFormValues> }) {
   )
 }
 
-export function RubricBuilder() {
-  const createRubric = useCreateRubric()
+type RubricBuilderProps = {
+  defaultValues?: RubricFormValues
+  submitLabel: string
+  pending: boolean
+  error: Error | null
+  onSubmit: (values: RubricFormValues) => void
+}
 
+export function RubricBuilder({
+  defaultValues,
+  submitLabel,
+  pending,
+  error,
+  onSubmit,
+}: RubricBuilderProps) {
   const form = useForm<RubricFormValues>({
     resolver: zodResolver(rubricFormSchema),
-    defaultValues: { title: '', courseName: '', courseId: '', criteria: [createCriterion()] },
+    defaultValues: defaultValues ?? {
+      title: '',
+      courseName: '',
+      courseId: '',
+      criteria: [createCriterion()],
+    },
   })
   const criteria = useFieldArray({ control: form.control, name: 'criteria' })
   const { errors } = form.formState
@@ -36,8 +52,6 @@ export function RubricBuilder() {
 
   const duplicateCriterion = (index: number) =>
     criteria.insert(index + 1, { ...form.getValues(`criteria.${index}`), id: crypto.randomUUID() })
-
-  const onSubmit = (values: RubricFormValues) => createRubric.mutate(values)
 
   return (
     <FormProvider {...form}>
@@ -89,9 +103,9 @@ export function RubricBuilder() {
               />
             ))}
 
-            {createRubric.error ? (
+            {error ? (
               <p role="alert" className="text-sm text-destructive">
-                {createRubric.error.message}
+                {error.message}
               </p>
             ) : null}
 
@@ -104,8 +118,8 @@ export function RubricBuilder() {
                 <Button variant="ghost" asChild>
                   <Link to="/rubrics">Cancel</Link>
                 </Button>
-                <Button type="submit" disabled={createRubric.isPending}>
-                  {createRubric.isPending ? 'Saving...' : 'Save rubric'}
+                <Button type="submit" disabled={pending}>
+                  {pending ? 'Saving...' : submitLabel}
                 </Button>
               </div>
             </div>

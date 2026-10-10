@@ -67,3 +67,14 @@ export const gradeSubmission = (id: string) =>
       "Grading isn't available right now. Please try again in a few minutes.",
     ),
   )
+
+export const emailSubmission = (id: string) =>
+  apiFetch(`/submissions/${id}/email`, z.null(), {
+    method: 'POST',
+    body: JSON.stringify({}),
+  }).catch(
+    withErrorMessages(
+      { 422: "This submission can't be emailed until it's been graded." },
+      "We couldn't email the student right now. Please try again in a few minutes.",
+    ),
+  )

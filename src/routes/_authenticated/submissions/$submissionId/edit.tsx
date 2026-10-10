@@ -2,11 +2,12 @@ import { createFileRoute, redirect } from '@tanstack/react-router'
 
 import { SubmissionForm } from '@/components/submission/SubmissionForm'
 import { useUpdateSubmission } from '@/hooks/mutations/useUpdateSubmission'
+import { documentQueryOptions } from '@/hooks/queries/useDocuments'
 import { rubricsQueryOptions } from '@/hooks/queries/useRubrics'
 import { submissionQueryOptions } from '@/hooks/queries/useSubmissions'
 
 const EditSubmissionPage = () => {
-  const submission = Route.useLoaderData()
+  const { submission, document } = Route.useLoaderData()
   const updateSubmission = useUpdateSubmission()
 
   return (
@@ -15,13 +16,14 @@ const EditSubmissionPage = () => {
         defaultValues={{
           studentId: submission.studentId,
           studentName: submission.studentName,
-          rubricId: submission.rubricId,
-          file: submission.file,
+          rubricId: submission.rubricId ?? '',
+          documentId: submission.documentId ?? undefined,
         }}
+        currentFileName={document?.originalFileName}
         submitLabel="Save changes"
         pending={updateSubmission.isPending}
         error={updateSubmission.error}
-        onSubmit={(values) => updateSubmission.mutate({ id: submission.id, values })}
+        onSubmit={(values) => updateSubmission.mutate({ submission, values })}
       />
     </div>
   )
@@ -35,7 +37,12 @@ export const Route = createFileRoute('/_authenticated/submissions/$submissionId/
       context.queryClient.ensureQueryData(rubricsQueryOptions),
     ])
     if (!submission) throw redirect({ to: '/submissions' })
-    return submission
+    const document = submission.documentId
+      ? await context.queryClient
+          .ensureQueryData(documentQueryOptions(submission.documentId))
+          .catch(() => null)
+      : null
+    return { submission, document }
   },
   component: EditSubmissionPage,
 })

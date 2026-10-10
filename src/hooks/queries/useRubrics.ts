@@ -1,6 +1,6 @@
 import { queryOptions, useQuery } from '@tanstack/react-query'
 
-import { listRubrics } from '@/lib/storage/rubrics'
+import { listRubrics } from '@/lib/services/rubrics'
 
 export const rubricKeys = {
   all: ['rubrics'] as const,

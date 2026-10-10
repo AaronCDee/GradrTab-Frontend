@@ -10,12 +10,14 @@ import {
   EmptyMedia,
   EmptyTitle,
 } from '@/components/ui/empty'
+import { documentsQueryOptions, useDocuments } from '@/hooks/queries/useDocuments'
 import { rubricsQueryOptions, useRubrics } from '@/hooks/queries/useRubrics'
 import { submissionsQueryOptions, useSubmissions } from '@/hooks/queries/useSubmissions'
 
 const SubmissionsPage = () => {
   const { data: submissions = [] } = useSubmissions()
   const { data: rubrics = [] } = useRubrics()
+  const { data: documents = [] } = useDocuments()
 
   return (
     <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
@@ -42,7 +44,7 @@ const SubmissionsPage = () => {
           </EmptyHeader>
         </Empty>
       ) : (
-        <SubmissionsTable submissions={submissions} rubrics={rubrics} />
+        <SubmissionsTable submissions={submissions} rubrics={rubrics} documents={documents} />
       )}
     </div>
   )
@@ -54,6 +56,7 @@ export const Route = createFileRoute('/_authenticated/submissions/')({
     Promise.all([
       context.queryClient.ensureQueryData(submissionsQueryOptions),
       context.queryClient.ensureQueryData(rubricsQueryOptions),
+      context.queryClient.ensureQueryData(documentsQueryOptions),
     ]),
   component: SubmissionsPage,
 })

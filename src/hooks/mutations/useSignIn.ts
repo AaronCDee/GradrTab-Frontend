@@ -1,7 +1,7 @@
 import { useMutation } from '@tanstack/react-query'
 
 import { useAuthSession } from '@/hooks/useAuthSession'
-import { apiFetch } from '@/lib/api'
+import { apiFetch, withErrorMessages } from '@/lib/api'
 import { authResponseSchema, type SignInValues } from '@/lib/schemas/auth'
 
 export function useSignIn({ redirectTo = '/submissions' }: { redirectTo?: string } = {}) {
@@ -12,7 +12,7 @@ export function useSignIn({ redirectTo = '/submissions' }: { redirectTo?: string
       return apiFetch('/login', authResponseSchema, {
         method: 'POST',
         body: JSON.stringify(values),
-      })
+      }).catch(withErrorMessages({ 401: "That email and password don't match. Try again." }))
     },
     onSuccess: (data) => startSession(data, redirectTo),
   })

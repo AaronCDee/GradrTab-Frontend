@@ -2,7 +2,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useNavigate } from '@tanstack/react-router'
 
 import { rubricKeys } from '@/hooks/queries/useRubrics'
-import { createRubric } from '@/lib/storage/rubrics'
+import { createRubric } from '@/lib/services/rubrics'
 
 export function useCreateRubric() {
   const queryClient = useQueryClient()

@@ -36,7 +36,19 @@ export const rubricFormSchema = z.object({
 
 export const rubricSchema = rubricFormSchema.extend({ id: z.string() })
 
+export const storedRubricSchema = rubricFormSchema.pick({ title: true, criteria: true })
+
+export const rubricResponseSchema = z.object({
+  id: z.string(),
+  courseName: z.string(),
+  courseId: z.string(),
+  rubricContent: z.string(),
+})
+
+export const rubricSummarySchema = rubricResponseSchema.omit({ rubricContent: true })
+
 export type RubricLevel = z.infer<typeof rubricLevelSchema>
 export type RubricCriterion = z.infer<typeof rubricCriterionSchema>
 export type RubricFormValues = z.infer<typeof rubricFormSchema>
 export type Rubric = z.infer<typeof rubricSchema>
+export type RubricResponse = z.infer<typeof rubricResponseSchema>

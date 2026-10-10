@@ -16,6 +16,7 @@ import { submissionFormSchema, type SubmissionFormValues } from '@/lib/schemas/s
 
 type SubmissionFormProps = {
   defaultValues?: SubmissionFormValues
+  currentFileName?: string
   submitLabel: string
   pending: boolean
   error: Error | null
@@ -24,6 +25,7 @@ type SubmissionFormProps = {
 
 export function SubmissionForm({
   defaultValues,
+  currentFileName,
   submitLabel,
   pending,
   error,
@@ -91,13 +93,13 @@ export function SubmissionForm({
                 name={field.name}
                 ref={field.ref}
                 onBlur={field.onBlur}
-                onChange={(event) => field.onChange(event.target.files?.[0] ?? defaultValues?.file)}
+                onChange={(event) => field.onChange(event.target.files?.[0])}
               />
             )}
           />
           <FieldDescription>
-            {defaultValues
-              ? `Current file: ${defaultValues.file.name}. Choose a new file to replace it.`
+            {currentFileName
+              ? `Current file: ${currentFileName}. Choose a new file to replace it.`
               : 'PDF or CSV'}
           </FieldDescription>
           <FieldError errors={[errors.file]} />

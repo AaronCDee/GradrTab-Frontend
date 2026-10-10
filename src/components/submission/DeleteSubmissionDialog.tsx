@@ -11,10 +11,10 @@ import {
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog'
 import { useDeleteSubmission } from '@/hooks/mutations/useDeleteSubmission'
-import type { Submission } from '@/lib/schemas/submission'
+import type { SubmissionSummary } from '@/lib/schemas/submission'
 
 type DeleteSubmissionDialogProps = {
-  submission: Submission | null
+  submission: SubmissionSummary | null
   onClose: () => void
 }
 
@@ -33,7 +33,7 @@ export function DeleteSubmissionDialog({ submission, onClose }: DeleteSubmission
   const confirm = (event: MouseEvent) => {
     event.preventDefault()
     if (!submission) return
-    deleteSubmission.mutate(submission.id, { onSuccess: close })
+    deleteSubmission.mutate(submission, { onSuccess: close })
   }
 
   return (
@@ -42,7 +42,7 @@ export function DeleteSubmissionDialog({ submission, onClose }: DeleteSubmission
         <AlertDialogHeader>
           <AlertDialogTitle>Delete submission for {submission?.studentName}?</AlertDialogTitle>
           <AlertDialogDescription>
-            This removes {submission?.file.name} permanently. This can't be undone.
+            This removes the submission and its uploaded file permanently. This can't be undone.
           </AlertDialogDescription>
         </AlertDialogHeader>
         {deleteSubmission.error ? (

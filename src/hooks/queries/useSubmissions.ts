@@ -1,6 +1,6 @@
 import { queryOptions, useQuery } from '@tanstack/react-query'
 
-import { getSubmission, listSubmissions } from '@/lib/storage/submissions'
+import { getSubmission, listSubmissions } from '@/lib/services/submissions'
 
 export const submissionKeys = {
   all: ['submissions'] as const,
@@ -16,6 +16,7 @@ export const submissionQueryOptions = (id: string) =>
   queryOptions({
     queryKey: submissionKeys.detail(id),
     queryFn: () => getSubmission(id),
+    refetchInterval: (query) => (query.state.data?.gradingStatus === 'InProgress' ? 3000 : false),
   })
 
 export const useSubmissions = () => useQuery(submissionsQueryOptions)

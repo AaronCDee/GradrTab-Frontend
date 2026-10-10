@@ -17,6 +17,8 @@ import { Route as AuthenticatedRubricsIndexRouteImport } from './routes/_authent
 import { Route as AuthenticatedRubricsNewRouteImport } from './routes/_authenticated/rubrics/new'
 import { Route as AuthenticatedSubmissionsIndexRouteImport } from './routes/_authenticated/submissions/index'
 import { Route as AuthenticatedSubmissionsNewRouteImport } from './routes/_authenticated/submissions/new'
+import { Route as AuthenticatedRubricsRubricIdIndexRouteImport } from './routes/_authenticated/rubrics/$rubricId/index'
+import { Route as AuthenticatedRubricsRubricIdEditRouteImport } from './routes/_authenticated/rubrics/$rubricId/edit'
 import { Route as AuthenticatedSubmissionsSubmissionIdIndexRouteImport } from './routes/_authenticated/submissions/$submissionId/index'
 import { Route as AuthenticatedSubmissionsSubmissionIdEditRouteImport } from './routes/_authenticated/submissions/$submissionId/edit'
 
@@ -62,6 +64,18 @@ const AuthenticatedSubmissionsNewRoute =
     path: '/submissions/new',
     getParentRoute: () => AuthenticatedRoute,
   } as any)
+const AuthenticatedRubricsRubricIdIndexRoute =
+  AuthenticatedRubricsRubricIdIndexRouteImport.update({
+    id: '/rubrics/$rubricId/',
+    path: '/rubrics/$rubricId/',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
+const AuthenticatedRubricsRubricIdEditRoute =
+  AuthenticatedRubricsRubricIdEditRouteImport.update({
+    id: '/rubrics/$rubricId/edit',
+    path: '/rubrics/$rubricId/edit',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
 const AuthenticatedSubmissionsSubmissionIdIndexRoute =
   AuthenticatedSubmissionsSubmissionIdIndexRouteImport.update({
     id: '/submissions/$submissionId/',
@@ -83,7 +97,9 @@ export interface FileRoutesByFullPath {
   '/submissions/new': typeof AuthenticatedSubmissionsNewRoute
   '/rubrics/': typeof AuthenticatedRubricsIndexRoute
   '/submissions/': typeof AuthenticatedSubmissionsIndexRoute
+  '/rubrics/$rubricId/edit': typeof AuthenticatedRubricsRubricIdEditRoute
   '/submissions/$submissionId/edit': typeof AuthenticatedSubmissionsSubmissionIdEditRoute
+  '/rubrics/$rubricId/': typeof AuthenticatedRubricsRubricIdIndexRoute
   '/submissions/$submissionId/': typeof AuthenticatedSubmissionsSubmissionIdIndexRoute
 }
 export interface FileRoutesByTo {
@@ -94,7 +110,9 @@ export interface FileRoutesByTo {
   '/submissions/new': typeof AuthenticatedSubmissionsNewRoute
   '/rubrics': typeof AuthenticatedRubricsIndexRoute
   '/submissions': typeof AuthenticatedSubmissionsIndexRoute
+  '/rubrics/$rubricId/edit': typeof AuthenticatedRubricsRubricIdEditRoute
   '/submissions/$submissionId/edit': typeof AuthenticatedSubmissionsSubmissionIdEditRoute
+  '/rubrics/$rubricId': typeof AuthenticatedRubricsRubricIdIndexRoute
   '/submissions/$submissionId': typeof AuthenticatedSubmissionsSubmissionIdIndexRoute
 }
 export interface FileRoutesById {
@@ -107,7 +125,9 @@ export interface FileRoutesById {
   '/_authenticated/submissions/new': typeof AuthenticatedSubmissionsNewRoute
   '/_authenticated/rubrics/': typeof AuthenticatedRubricsIndexRoute
   '/_authenticated/submissions/': typeof AuthenticatedSubmissionsIndexRoute
+  '/_authenticated/rubrics/$rubricId/edit': typeof AuthenticatedRubricsRubricIdEditRoute
   '/_authenticated/submissions/$submissionId/edit': typeof AuthenticatedSubmissionsSubmissionIdEditRoute
+  '/_authenticated/rubrics/$rubricId/': typeof AuthenticatedRubricsRubricIdIndexRoute
   '/_authenticated/submissions/$submissionId/': typeof AuthenticatedSubmissionsSubmissionIdIndexRoute
 }
 export interface FileRouteTypes {
@@ -120,7 +140,9 @@ export interface FileRouteTypes {
     | '/submissions/new'
     | '/rubrics/'
     | '/submissions/'
+    | '/rubrics/$rubricId/edit'
     | '/submissions/$submissionId/edit'
+    | '/rubrics/$rubricId/'
     | '/submissions/$submissionId/'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -131,7 +153,9 @@ export interface FileRouteTypes {
     | '/submissions/new'
     | '/rubrics'
     | '/submissions'
+    | '/rubrics/$rubricId/edit'
     | '/submissions/$submissionId/edit'
+    | '/rubrics/$rubricId'
     | '/submissions/$submissionId'
   id:
     | '__root__'
@@ -143,7 +167,9 @@ export interface FileRouteTypes {
     | '/_authenticated/submissions/new'
     | '/_authenticated/rubrics/'
     | '/_authenticated/submissions/'
+    | '/_authenticated/rubrics/$rubricId/edit'
     | '/_authenticated/submissions/$submissionId/edit'
+    | '/_authenticated/rubrics/$rubricId/'
     | '/_authenticated/submissions/$submissionId/'
   fileRoutesById: FileRoutesById
 }
@@ -212,6 +238,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedSubmissionsNewRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/rubrics/$rubricId/': {
+      id: '/_authenticated/rubrics/$rubricId/'
+      path: '/rubrics/$rubricId'
+      fullPath: '/rubrics/$rubricId/'
+      preLoaderRoute: typeof AuthenticatedRubricsRubricIdIndexRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/rubrics/$rubricId/edit': {
+      id: '/_authenticated/rubrics/$rubricId/edit'
+      path: '/rubrics/$rubricId/edit'
+      fullPath: '/rubrics/$rubricId/edit'
+      preLoaderRoute: typeof AuthenticatedRubricsRubricIdEditRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
     '/_authenticated/submissions/$submissionId/': {
       id: '/_authenticated/submissions/$submissionId/'
       path: '/submissions/$submissionId'
@@ -234,7 +274,9 @@ interface AuthenticatedRouteChildren {
   AuthenticatedSubmissionsNewRoute: typeof AuthenticatedSubmissionsNewRoute
   AuthenticatedRubricsIndexRoute: typeof AuthenticatedRubricsIndexRoute
   AuthenticatedSubmissionsIndexRoute: typeof AuthenticatedSubmissionsIndexRoute
+  AuthenticatedRubricsRubricIdEditRoute: typeof AuthenticatedRubricsRubricIdEditRoute
   AuthenticatedSubmissionsSubmissionIdEditRoute: typeof AuthenticatedSubmissionsSubmissionIdEditRoute
+  AuthenticatedRubricsRubricIdIndexRoute: typeof AuthenticatedRubricsRubricIdIndexRoute
   AuthenticatedSubmissionsSubmissionIdIndexRoute: typeof AuthenticatedSubmissionsSubmissionIdIndexRoute
 }
 
@@ -243,8 +285,11 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedSubmissionsNewRoute: AuthenticatedSubmissionsNewRoute,
   AuthenticatedRubricsIndexRoute: AuthenticatedRubricsIndexRoute,
   AuthenticatedSubmissionsIndexRoute: AuthenticatedSubmissionsIndexRoute,
+  AuthenticatedRubricsRubricIdEditRoute: AuthenticatedRubricsRubricIdEditRoute,
   AuthenticatedSubmissionsSubmissionIdEditRoute:
     AuthenticatedSubmissionsSubmissionIdEditRoute,
+  AuthenticatedRubricsRubricIdIndexRoute:
+    AuthenticatedRubricsRubricIdIndexRoute,
   AuthenticatedSubmissionsSubmissionIdIndexRoute:
     AuthenticatedSubmissionsSubmissionIdIndexRoute,
 }

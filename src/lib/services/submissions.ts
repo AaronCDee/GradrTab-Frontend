@@ -4,6 +4,7 @@ import { ApiError, apiFetch, withErrorMessages } from '@/lib/api'
 import { pagedSchema } from '@/lib/schemas/paged'
 import {
   evaluationSchema,
+  gradingEmailSchema,
   submissionSchema,
   submissionSummarySchema,
   type Submission,
@@ -68,13 +69,16 @@ export const gradeSubmission = (id: string) =>
     ),
   )
 
-export const emailSubmission = (id: string) =>
-  apiFetch(`/submissions/${id}/email`, z.null(), {
+export const emailSubmission = (id: string, graderEmail: string) =>
+  apiFetch(`/submissions/${id}/email-grading-result`, gradingEmailSchema, {
     method: 'POST',
-    body: JSON.stringify({}),
+    body: JSON.stringify({ graderEmail }),
   }).catch(
     withErrorMessages(
-      { 422: "This submission can't be emailed until it's been graded." },
-      "We couldn't email the student right now. Please try again in a few minutes.",
+      {
+        422: "This submission can't be emailed until it's been graded.",
+        503: "Email isn't set up on the server yet.",
+      },
+      "We couldn't send the email right now. Please try again in a few minutes.",
     ),
   )

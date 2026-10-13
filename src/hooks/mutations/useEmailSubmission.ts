@@ -5,8 +5,8 @@ import { emailSubmission } from '@/lib/services/submissions'
 
 export function useEmailSubmission(id: string) {
   return useMutation({
-    mutationFn: () => emailSubmission(id),
-    onSuccess: () => toast.success('Email sent to the student.'),
+    mutationFn: (graderEmail: string) => emailSubmission(id, graderEmail),
+    onSuccess: ({ toEmail }) => toast.success(`Grading result sent to ${toEmail}.`),
     onError: (error) => toast.error(error.message),
   })
 }

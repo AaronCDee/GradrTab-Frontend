@@ -25,6 +25,7 @@ import { downloadDocument } from '@/lib/services/documents'
 const SubmissionPage = () => {
   const { submissionId } = Route.useParams()
   const { document } = Route.useLoaderData()
+  const { user } = Route.useRouteContext()
   const { data: submission } = useQuery(submissionQueryOptions(submissionId))
   const { data: rubrics = [] } = useRubrics()
   const grade = useGradeSubmission(submissionId)
@@ -85,7 +86,7 @@ const SubmissionPage = () => {
           </Button>
           <Button
             variant="outline"
-            onClick={() => email.mutate()}
+            onClick={() => email.mutate(user.email)}
             disabled={!graded || grading || email.isPending}
           >
             {email.isPending ? (
@@ -93,7 +94,7 @@ const SubmissionPage = () => {
             ) : (
               <MailIcon data-icon="inline-start" />
             )}
-            {email.isPending ? 'Sending...' : 'Email student'}
+            {email.isPending ? 'Sending...' : 'Email results'}
           </Button>
           <Button onClick={() => grade.mutate()} disabled={grading || !gradable}>
             {grading ? (

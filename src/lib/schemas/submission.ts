@@ -70,6 +70,12 @@ export const submissionSummarySchema = submissionSchema.omit({
   failureReason: true,
 })
 
+export const gradingEmailSchema = z.object({
+  toEmail: z.string(),
+  submissionId: z.string(),
+  message: z.string(),
+})
+
 export type SubmissionFormValues = z.infer<typeof submissionFormSchema>
 export type GradingStatus = z.infer<typeof gradingStatusSchema>
 export type Evaluation = z.infer<typeof evaluationSchema>

@@ -70,13 +70,42 @@ export const submissionSummarySchema = submissionSchema.omit({
   failureReason: true,
 })
 
+export const gradingEmailFormSchema = z.object({
+  graderEmail: z.email('Enter a valid email address'),
+})
+
 export const gradingEmailSchema = z.object({
   toEmail: z.string(),
   submissionId: z.string(),
   message: z.string(),
 })
 
+export const aiDetectionVerdictSchema = z.enum(['likely-human', 'mixed', 'likely-ai'])
+
+export const aiDetectionSignalSchema = z.object({
+  signal: z.string(),
+  detail: z.string(),
+  weight: z.number(),
+})
+
+export const aiDetectionSchema = z.object({
+  documentId: z.string().nullable(),
+  submissionId: z.string().nullable(),
+  aiPercentage: z.number(),
+  humanPercentage: z.number(),
+  verdict: aiDetectionVerdictSchema,
+  confidence: z.number(),
+  summary: z.string().nullable(),
+  signals: z.array(aiDetectionSignalSchema),
+  textTruncated: z.boolean(),
+  model: z.string(),
+  detectedAt: z.string(),
+})
+
 export type SubmissionFormValues = z.infer<typeof submissionFormSchema>
+export type GradingEmailFormValues = z.infer<typeof gradingEmailFormSchema>
+export type AiDetectionVerdict = z.infer<typeof aiDetectionVerdictSchema>
+export type AiDetection = z.infer<typeof aiDetectionSchema>
 export type GradingStatus = z.infer<typeof gradingStatusSchema>
 export type Evaluation = z.infer<typeof evaluationSchema>
 export type Submission = z.infer<typeof submissionSchema>

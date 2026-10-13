@@ -28,7 +28,7 @@ type EvaluationCardProps = {
 const formatScore = (score: number | null, maxScore: number | null) =>
   `${score ?? '—'} / ${maxScore ?? '—'}`
 
-function Stat({ label, value }: { label: string; value: string }) {
+export function Stat({ label, value }: { label: string; value: string }) {
   return (
     <div className="flex flex-col gap-0.5">
       <span className="text-xs text-muted-foreground">{label}</span>

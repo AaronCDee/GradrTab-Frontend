@@ -1,8 +1,17 @@
 import { useQuery } from '@tanstack/react-query'
 import { createFileRoute, Link, redirect } from '@tanstack/react-router'
-import { ClipboardCheckIcon, DownloadIcon, MailIcon, PencilIcon, SparklesIcon } from 'lucide-react'
-import { useEffect } from 'react'
+import {
+  ClipboardCheckIcon,
+  DownloadIcon,
+  MailIcon,
+  PencilIcon,
+  ScanSearchIcon,
+  SparklesIcon,
+} from 'lucide-react'
+import { useEffect, useState } from 'react'
 
+import { AiDetectionCard } from '@/components/submission/AiDetectionCard'
+import { EmailResultsDialog } from '@/components/submission/EmailResultsDialog'
 import { EvaluationCard } from '@/components/submission/EvaluationCard'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -14,7 +23,7 @@ import {
   EmptyTitle,
 } from '@/components/ui/empty'
 import { Spinner } from '@/components/ui/spinner'
-import { useEmailSubmission } from '@/hooks/mutations/useEmailSubmission'
+import { useDetectSubmissionAi } from '@/hooks/mutations/useDetectSubmissionAi'
 import { useGradeSubmission } from '@/hooks/mutations/useGradeSubmission'
 import { documentQueryOptions } from '@/hooks/queries/useDocuments'
 import { rubricsQueryOptions, useRubrics } from '@/hooks/queries/useRubrics'
@@ -25,11 +34,11 @@ import { downloadDocument } from '@/lib/services/documents'
 const SubmissionPage = () => {
   const { submissionId } = Route.useParams()
   const { document } = Route.useLoaderData()
-  const { user } = Route.useRouteContext()
   const { data: submission } = useQuery(submissionQueryOptions(submissionId))
   const { data: rubrics = [] } = useRubrics()
   const grade = useGradeSubmission(submissionId)
-  const email = useEmailSubmission(submissionId)
+  const detection = useDetectSubmissionAi(submissionId)
+  const [emailOpen, setEmailOpen] = useState(false)
   const failureReason = submission?.gradingStatus === 'Failure' ? submission.failureReason : null
 
   useEffect(() => {
@@ -86,15 +95,23 @@ const SubmissionPage = () => {
           </Button>
           <Button
             variant="outline"
-            onClick={() => email.mutate(user.email)}
-            disabled={!graded || grading || email.isPending}
+            onClick={() => setEmailOpen(true)}
+            disabled={!graded || grading}
           >
-            {email.isPending ? (
+            <MailIcon data-icon="inline-start" />
+            Email results
+          </Button>
+          <Button
+            variant="outline"
+            onClick={() => detection.mutate()}
+            disabled={!submission.documentId || detection.isPending}
+          >
+            {detection.isPending ? (
               <Spinner data-icon="inline-start" />
             ) : (
-              <MailIcon data-icon="inline-start" />
+              <ScanSearchIcon data-icon="inline-start" />
             )}
-            {email.isPending ? 'Sending...' : 'Email results'}
+            {detection.isPending ? 'Checking...' : 'Check for AI'}
           </Button>
           <Button onClick={() => grade.mutate()} disabled={grading || !gradable}>
             {grading ? (
@@ -119,6 +136,14 @@ const SubmissionPage = () => {
         </p>
       ) : null}
 
+      {detection.error ? (
+        <p role="alert" className="text-sm text-destructive">
+          {detection.error.message}
+        </p>
+      ) : null}
+
+      {detection.data ? <AiDetectionCard detection={detection.data} /> : null}
+
       {evaluation ? (
         <EvaluationCard evaluation={evaluation} outdated={outdated} />
       ) : (
@@ -136,6 +161,12 @@ const SubmissionPage = () => {
           </EmptyHeader>
         </Empty>
       )}
+
+      <EmailResultsDialog
+        submissionId={submissionId}
+        open={emailOpen}
+        onClose={() => setEmailOpen(false)}
+      />
     </div>
   )
 }

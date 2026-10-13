@@ -3,6 +3,7 @@ import { z } from 'zod'
 import { ApiError, apiFetch, withErrorMessages } from '@/lib/api'
 import { pagedSchema } from '@/lib/schemas/paged'
 import {
+  aiDetectionSchema,
   evaluationSchema,
   gradingEmailSchema,
   submissionSchema,
@@ -66,6 +67,19 @@ export const gradeSubmission = (id: string) =>
         422: "This submission can't be graded yet. Make sure it has a rubric and a file with enough readable text.",
       },
       "Grading isn't available right now. Please try again in a few minutes.",
+    ),
+  )
+
+export const detectSubmissionAi = (id: string) =>
+  apiFetch(`/submissions/${id}/ai-detection`, aiDetectionSchema, {
+    method: 'POST',
+    body: JSON.stringify({}),
+  }).catch(
+    withErrorMessages(
+      {
+        422: "This submission can't be checked yet. Make sure it has a file with enough readable text.",
+      },
+      "AI detection isn't available right now. Please try again in a few minutes.",
     ),
   )
 

@@ -7,6 +7,5 @@ export function useEmailSubmission(id: string) {
   return useMutation({
     mutationFn: (graderEmail: string) => emailSubmission(id, graderEmail),
     onSuccess: ({ toEmail }) => toast.success(`Grading result sent to ${toEmail}.`),
-    onError: (error) => toast.error(error.message),
   })
 }
